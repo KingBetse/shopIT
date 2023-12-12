@@ -1,0 +1,134 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_it/screen/cart_screen.dart';
+
+import 'package:shop_it/screen/product_detail.dart';
+
+import './tabScreen.dart';
+import './shop.dart';
+import './provider/products.dart';
+import '../provider/cart.dart';
+import './provider/order.dart';
+import './screen/order_screen.dart';
+import './screen/user_product.dart';
+import './screen/editScreen.dart';
+import './screen/auth_screen.dart';
+import './provider/auth.dart';
+
+void main() => runApp(const MyApp());
+
+enum FilterOpp { Favorites, All }
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => Auth(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Products(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Cart(),
+          ),
+          ChangeNotifierProvider(
+            create: (contex) => Orders(),
+          ),
+          ChangeNotifierProvider(
+            create: (contex) => OrderItem(
+                id: '', amount: 0, product: [], daeTime: DateTime.now()),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'MyShop',
+          theme: ThemeData(
+              fontFamily: "Lato",
+              colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
+                  .copyWith(secondary: Colors.deepOrange)),
+          home: AuthScreen(),
+          routes: {
+            Product_detail.routeName: (context) => const Product_detail(),
+            Cart_Screen.routeName: (context) => const Cart_Screen(),
+            OrderScreen.routeName: (context) => const OrderScreen(),
+            UserProduct.routeName: (context) => const UserProduct(),
+            Edit_Screen.routename: (context) => const Edit_Screen(),
+          },
+        ));
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  var showOnlyFavorite = false;
+  var _isloading = false;
+  @override
+  void initState() {
+    _isloading = true;
+
+    Future.delayed(Duration.zero).then((_) {
+      Provider.of<Products>(context, listen: false).fetchProduct().then((_) {
+        setState(() {
+          _isloading = false;
+        });
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: const Text("ShopIT"), actions: [
+          PopupMenuButton(
+            onSelected: (FilterOpp selectedValue) {
+              setState(() {
+                if (selectedValue == FilterOpp.Favorites) {
+                  showOnlyFavorite = true;
+                } else {
+                  showOnlyFavorite = false;
+                }
+              });
+            },
+            itemBuilder: (_) => [
+              const PopupMenuItem(
+                  value: FilterOpp.Favorites, child: Text('Favorite')),
+              const PopupMenuItem(
+                value: FilterOpp.All,
+                child: Text("All"),
+              )
+            ],
+          ),
+          Consumer<Cart>(
+              builder: (context, valuee, child) => Badge(
+                    label: Text(valuee.itemCount.toString()),
+                    child: child,
+                  ),
+              child: IconButton(
+                icon: const Icon(Icons.shopping_cart),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(Cart_Screen.routeName),
+              ))
+        ]),
+        drawer: const TabScreen(),
+        body: _isloading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : shopPage(showOnlyFavorite));
+  }
+}
