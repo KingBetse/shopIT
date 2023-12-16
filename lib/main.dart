@@ -30,31 +30,45 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => Auth(),
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (ctx) => Products('', '', []),
+          update: (context, auth, previousProducts) => Products(
+            auth.token.toString(),
+            auth.userId.toString(),
+            previousProducts == null ? [] : previousProducts.Items,
           ),
-          ChangeNotifierProvider(
-            create: (context) => Products(),
+          // create: (context) => Products(),
+          // )
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Cart(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          create: (contex) => Orders('', '', []),
+          update: (context, value, previous) => Orders(
+            value.token.toString(),
+            value.userId.toString(),
+            previous == null ? [] : previous.orders,
           ),
-          ChangeNotifierProvider(
-            create: (context) => Cart(),
-          ),
-          ChangeNotifierProvider(
-            create: (contex) => Orders(),
-          ),
-          ChangeNotifierProvider(
-            create: (contex) => OrderItem(
-                id: '', amount: 0, product: [], daeTime: DateTime.now()),
-          ),
-        ],
-        child: MaterialApp(
+        ),
+        ChangeNotifierProvider(
+          create: (contex) => OrderItem(
+              id: '', amount: 0, product: [], daeTime: DateTime.now()),
+        ),
+      ],
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
           title: 'MyShop',
           theme: ThemeData(
-              fontFamily: "Lato",
-              colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
-                  .copyWith(secondary: Colors.deepOrange)),
-          home: AuthScreen(),
+            fontFamily: "Lato",
+            // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
+            //     .copyWith(secondary: Colors.deepOrange)),
+          ),
+          home: auth.isAuth ? MyHomePage() : AuthScreen(),
           routes: {
             Product_detail.routeName: (context) => const Product_detail(),
             Cart_Screen.routeName: (context) => const Cart_Screen(),
@@ -62,7 +76,9 @@ class _MyAppState extends State<MyApp> {
             UserProduct.routeName: (context) => const UserProduct(),
             Edit_Screen.routename: (context) => const Edit_Screen(),
           },
-        ));
+        ),
+      ),
+    );
   }
 }
 

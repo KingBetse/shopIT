@@ -33,6 +33,29 @@ class _Edit_ScreenState extends State<Edit_Screen> {
   };
   var isLoading = false;
   var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final productId = ModalRoute.of(context)!.settings.arguments ?? '';
+      print(productId);
+      // ignore: unnecessary_null_comparison
+      if (productId != '') {
+        _editedProduct = Provider.of<Products>(context, listen: false)
+            .findById(productId as String);
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
+          'imageUrl': '',
+        };
+        _imageController.text = _editedProduct.imageUrl;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   @override
   void dispose() {
     _priceNode.dispose();
@@ -60,7 +83,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
       } catch (error) {
-        return showDialog<Null>(
+        await showDialog<Null>(
             context: context,
             builder: (ctx) => AlertDialog(
                   title: Text("an error Occured"),
@@ -79,27 +102,6 @@ class _Edit_ScreenState extends State<Edit_Screen> {
       isLoading = false;
     });
     Navigator.of(context).pop();
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      final productId = ModalRoute.of(context)?.settings.arguments as String;
-      print(productId);
-      if (productId != '') {
-        _editedProduct = Provider.of<Products>(context).findById(productId);
-        _initValues = {
-          'title': _editedProduct.title,
-          'description': _editedProduct.description,
-          'price': _editedProduct.price.toString(),
-          'imageUrl': '',
-        };
-        _imageController.text = _editedProduct.imageUrl;
-        _isInit = false;
-      }
-    }
-
-    super.didChangeDependencies();
   }
 
   Widget build(BuildContext context) {

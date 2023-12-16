@@ -8,6 +8,23 @@ class Auth with ChangeNotifier {
   DateTime? _expiryDate;
   String? _userId;
 
+  bool get isAuth {
+    return token != null;
+  }
+
+  String? get token {
+    if (_expiryDate != null &&
+        _expiryDate!.isAfter(DateTime.now()) &&
+        _token != null) {
+      return _token;
+    }
+    return null;
+  }
+
+  String? get userId {
+    return _userId;
+  }
+
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
     try {
@@ -29,6 +46,18 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
+      _token = responseData['idToken'];
+      // print(_token);
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseData['expiresIn'],
+          ),
+        ),
+      );
+      print(_expiryDate);
+      _userId = responseData['localId'];
+      notifyListeners();
     } catch (error) {
       throw error;
     }
@@ -50,6 +79,16 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
+      _token = responseData['idToken'];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseData['expiresIn'],
+          ),
+        ),
+      );
+      _userId = responseData['localId'];
+      notifyListeners();
     } catch (error) {
       throw error;
     }
@@ -69,5 +108,12 @@ class Auth with ChangeNotifier {
     //       "returnSecureToken": true,
     //     }));
     return _authenticate(email, password, "verifyPassword");
+  }
+
+  void logOut() {
+    _token = null;
+    _userId = null;
+    _expiryDate = null;
+    notifyListeners();
   }
 }

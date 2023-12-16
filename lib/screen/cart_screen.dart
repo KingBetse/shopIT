@@ -47,11 +47,14 @@ class Cart_Screen extends StatelessWidget {
       body: Column(children: [
         Card(
           elevation: 5,
-          margin: const EdgeInsets.all(15),
+          margin: const EdgeInsets.all(10),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
             child: Row(
               children: [
+                const SizedBox(
+                  width: 10,
+                ),
                 const Text(
                   'Total',
                   style: TextStyle(fontSize: 20),
@@ -61,7 +64,7 @@ class Cart_Screen extends StatelessWidget {
                 ),
                 Chip(label: Text('\$${cart.totalAmount.toStringAsFixed(2)}')),
                 const SizedBox(
-                  width: 130,
+                  width: 100,
                 ),
                 TextButton(
                   child: Text("ORDER NOW"),
