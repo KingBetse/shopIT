@@ -8,11 +8,13 @@ import 'package:shop_it/screen/product_detail.dart';
 import '../provider/auth.dart';
 
 class Product_item extends StatelessWidget {
-  final bool showFav;
+  // final bool showFav;
   // final String id;
   // final String title;
   // final String imageUrl;
-  const Product_item(this.showFav, {super.key});
+  final int index;
+
+  const Product_item(this.index, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class Product_item extends StatelessWidget {
               ),
               onPressed: () {
                 products.toggleFavoriteStatus(
-                    authData.token.toString(), authData.userId.toString());
+                    authData.token!, authData.userId!);
               },
             ),
           ),

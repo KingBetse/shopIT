@@ -46,7 +46,7 @@ class _OrderScreenState extends State<OrderScreen> {
             } else {
               if (snapshot.error != null) {
                 return Center(
-                  child: Text("You go some Issue BRUHH"),
+                  child: Text("You go some Issue "),
                 );
               } else {
                 return Consumer<Orders>(

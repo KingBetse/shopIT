@@ -67,7 +67,7 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
-          'isFavorite': product.isFavourite,
+          // 'isFavorite': product.isFavourite,
           'creatorId': userId
         }),
       );
@@ -97,11 +97,18 @@ class Products with ChangeNotifier {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
 
-      // url = Uri.https(
-      //     'flutter-update.firebaseio.com/userFavorites/$userId.json?auth=$authToken');
-      // var favoriteR = await http.get(url);
-      // final favoriteData = json.decode(favoriteR.body);
-      // print(favoriteData);
+      if (extractedData == null) {
+        return;
+      }
+      url = Uri.https(
+        'shopit-a52e1-default-rtdb.firebaseio.com',
+        '/userFavorites/$userId.json',
+        {'auth': authToken},
+      );
+      var favoriteR = await http.get(url);
+      final favoriteData = json.decode(favoriteR.body);
+      print(favoriteData);
+      print("HI");
 
       final List<Product> loadedProducts = [];
       extractedData.forEach((key, value) {
@@ -110,8 +117,8 @@ class Products with ChangeNotifier {
             title: value["title"],
             description: value['description'],
             price: value['price'],
-            // isFavourite:
-            //     favoriteData == null ? false : favoriteData[key] ?? false,
+            isFavourite:
+                favoriteData == null ? false : favoriteData[key] ?? false,
             imageUrl: value["imageUrl"]));
       });
       Items = loadedProducts;

@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../provider/product.dart';
 import '../provider/products.dart';
@@ -31,6 +36,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     'price': '',
     'imageUrl': '',
   };
+  String imageUrl = '';
   var isLoading = false;
   var _isInit = true;
 
@@ -63,6 +69,15 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     _imageNode.dispose();
     _imageController.dispose();
     super.dispose();
+  }
+
+  pickImage(ImageSource source) async {
+    final ImagePicker _imagePicker = ImagePicker();
+    XFile? file = await _imagePicker.pickImage(source: source);
+  }
+
+  void selectImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
   }
 
   Future<void> _saveForm() async {
@@ -218,7 +233,45 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                                       ),
                                     )),
                           Expanded(
-                            child: TextFormField(
+                            child:
+                                //   IconButton(
+                                // onPressed: () async {
+                                //   print("hi");
+                                //   ImagePicker imagePicker = ImagePicker();
+                                //   XFile? file = await imagePicker.pickImage(
+                                //       source: ImageSource.gallery);
+                                //   print("hi");
+                                //   print('${file?.path}');
+
+                                //   if (file == null) return;
+
+                                //   String uniquee = DateTime.now()
+                                //       .microsecondsSinceEpoch
+                                //       .toString();
+                                //   //Get a referance to storage root
+                                //   Reference referenceRoot =
+                                //       FirebaseStorage.instance.ref();
+
+                                //   Reference referenceDirImage =
+                                //       referenceRoot.child('images');
+
+                                //   //create a reference for the image to be stored
+                                //   Reference referenceImageToUpload =
+                                //       referenceDirImage.child(uniquee);
+                                //   try {
+                                //     //store the file
+                                //     await referenceImageToUpload
+                                //         .putFile(File(file.path));
+                                //     imageUrl = await referenceImageToUpload
+                                //         .getDownloadURL();
+                                //   } catch (error) {
+                                //     print("WEEEEEEEEEEEEEEEEEE");
+                                //   }
+                                //   print("fdfdfdfdfd");
+                                // },
+                                // icon: Icon(Icons.camera_alt),
+
+                                TextFormField(
                               decoration:
                                   InputDecoration(labelText: 'Imagen URL'),
                               keyboardType: TextInputType.url,

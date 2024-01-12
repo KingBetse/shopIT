@@ -8,17 +8,19 @@ import '../provider/products.dart';
 
 class shopPage extends StatelessWidget {
   // final List<Product> loadedProduct =
-  final bool showFavourite;
+  // final bool showFavourite;
+  final int index;
   static const routeName = '/';
 
-  const shopPage(this.showFavourite, {super.key});
+  // const shopPage(this.showFavourite, {super.key});
+  const shopPage(this.index, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<Products>(context);
 
     final product =
-        showFavourite ? productsData.favouriteItems : productsData.items;
+        index == 1 ? productsData.favouriteItems : productsData.items;
 
     return GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -29,7 +31,7 @@ class shopPage extends StatelessWidget {
         itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: product[i],
               // create: (c) => products[i],
-              child: Product_item(showFavourite),
+              child: Product_item(index),
             ),
         padding: const EdgeInsets.all(10.0),
         itemCount: product.length);

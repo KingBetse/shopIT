@@ -106,6 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  int myIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,11 +142,32 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.of(context).pushNamed(Cart_Screen.routeName),
               ))
         ]),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.all_out),
+              label: 'All',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Favorite',
+            ),
+          ],
+          currentIndex: myIndex,
+          selectedItemColor: Colors.amber[800],
+          onTap: (index) {
+            setState(() {
+              myIndex = index;
+            });
+          },
+        ),
         drawer: const TabScreen(),
         body: _isloading
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : shopPage(showOnlyFavorite));
+            :
+            // shopPage(showOnlyFavorite)
+            shopPage(myIndex));
   }
 }

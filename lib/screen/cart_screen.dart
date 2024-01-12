@@ -17,9 +17,14 @@ class Cart_Screen extends StatelessWidget {
       try {
         await Provider.of<Orders>(context, listen: false)
             .addOrder(cart.item.values.toList(), cart.totalAmount);
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text("Added to My Order"),
+          duration: const Duration(seconds: 2),
+        ));
         // print(cart.item.values.map(
         //   (e) => e.price,
-        // ));
+        // ));s
         cart.clear();
       } catch (error) {
         return showDialog<Null>(
@@ -47,7 +52,7 @@ class Cart_Screen extends StatelessWidget {
       body: Column(children: [
         Card(
           elevation: 5,
-          margin: const EdgeInsets.all(10),
+          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
             child: Row(
@@ -64,7 +69,7 @@ class Cart_Screen extends StatelessWidget {
                 ),
                 Chip(label: Text('\$${cart.totalAmount.toStringAsFixed(2)}')),
                 const SizedBox(
-                  width: 100,
+                  width: 80,
                 ),
                 TextButton(
                   child: Text("ORDER NOW"),
