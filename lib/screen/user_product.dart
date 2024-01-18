@@ -18,6 +18,8 @@ class UserProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final productData = Provider.of<Products>(context, listen: false).items;
+    final deviceSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Manage Products"),
@@ -32,66 +34,72 @@ class UserProduct extends StatelessWidget {
       drawer: TabScreen(),
       body: FutureBuilder(
         future: _refreshProducts(context),
-        builder: (context, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: () => _refreshProducts(context),
-                    child: Consumer<Products>(
-                      builder: (ctx, productsData, _) => SizedBox(
-                        height: 800,
-                        width: double.infinity,
-                        child: ListView(shrinkWrap: true, children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            // child: Center(
-                            //   child: Text('abebe'),
-                            // ),.values.toList()[i].
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? Center(child: CircularProgressIndicator())
+            : RefreshIndicator(
+                onRefresh: () => _refreshProducts(context),
+                child: Consumer<Products>(
+                  builder: (ctx, productsData, _) => SizedBox(
+                    height: 800,
+                    width: double.infinity,
+                    child: ListView(shrinkWrap: true, children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        // child: Center(
+                        //   child: Text('abebe'),
+                        // ),.values.toList()[i].
 
-                            child: Column(
-                              children: productsData.items.map((e) {
-                                // print(e.id);
-                                return ListTile(
-                                  title: Text(e.title),
-                                  leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(e.imageUrl),
-                                  ),
-                                  trailing: SizedBox(
-                                    width: 100,
-                                    height: 30,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pushNamed(
-                                                  Edit_Screen.routename,
-                                                  arguments: e.id);
-                                            },
-                                            icon: const Icon(
-                                              Icons.edit,
-                                              color: Colors.blue,
-                                            )),
-                                        IconButton(
-                                            onPressed: () {
-                                              Provider.of<Products>(context,
-                                                      listen: false)
-                                                  .deleteProdct(e.id);
-                                            },
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            ))
-                                      ],
+                        child: productsData.items.isEmpty
+                            ? Container(
+                                margin: EdgeInsets.only(top: 300),
+                                child: Center(
+                                    child: Text("You didn't post anything")))
+                            : Column(
+                                children: productsData.items.map((e) {
+                                  // print(e.id);
+                                  return ListTile(
+                                    title: Text(e.title),
+                                    leading: CircleAvatar(
+                                      backgroundImage: NetworkImage(e.imageUrl),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ]),
+                                    trailing: SizedBox(
+                                      width: 100,
+                                      height: 30,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pushNamed(
+                                                    Edit_Screen.routename,
+                                                    arguments: e.id);
+                                              },
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: Colors.blue,
+                                              )),
+                                          IconButton(
+                                              onPressed: () {
+                                                Provider.of<Products>(context,
+                                                        listen: false)
+                                                    .deleteProdct(e.id);
+                                              },
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ))
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
                       ),
-                    )),
+                    ]),
+                  ),
+                )),
       ),
     );
   }

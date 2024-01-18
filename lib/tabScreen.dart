@@ -15,7 +15,7 @@ class TabScreen extends StatelessWidget {
       child: Column(
         children: [
           AppBar(
-            title: const Text("ShopIT"),
+            title: const Text("ShoeIT"),
             automaticallyImplyLeading: false,
           ),
           const SizedBox(

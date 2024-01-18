@@ -21,6 +21,10 @@ class _OrderScreenState extends State<OrderScreen> {
     return Provider.of<Orders>(context, listen: false).fetchOrder();
   }
 
+  Future<void> _refreshOrders(BuildContext ctx) async {
+    await Provider.of<Orders>(ctx, listen: false).fetchOrder();
+  }
+
   void initState() {
     _orderFuture = _obtainOrdersFuture();
     super.initState();
@@ -37,7 +41,7 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
       drawer: const TabScreen(),
       body: FutureBuilder(
-          future: _orderFuture,
+          future: _refreshOrders(context),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -46,15 +50,22 @@ class _OrderScreenState extends State<OrderScreen> {
             } else {
               if (snapshot.error != null) {
                 return Center(
-                  child: Text("You go some Issue "),
+                  child: Text("Place An Order"),
                 );
               } else {
-                return Consumer<Orders>(
-                  builder: ((context, order, child) => ListView.builder(
-                        itemBuilder: (context, index) =>
-                            OrderItem(order.order[index]),
-                        itemCount: order.order.length,
-                      )),
+                return RefreshIndicator(
+                  onRefresh: () => _refreshOrders(context),
+                  child: Consumer<Orders>(
+                    builder: ((context, order, child) => order.order.isEmpty
+                        ? Center(
+                            child: Text("Place An Order"),
+                          )
+                        : ListView.builder(
+                            itemBuilder: (context, index) =>
+                                OrderItem(order.order[index], order),
+                            itemCount: order.order.length,
+                          )),
+                  ),
                 );
               }
             }

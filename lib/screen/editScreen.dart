@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:http/http.dart' as http;
 
 import '../provider/product.dart';
 import '../provider/products.dart';
@@ -36,7 +37,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     'price': '',
     'imageUrl': '',
   };
-  String imageUrl = '';
+  // String imageUrl = '';
   var isLoading = false;
   var _isInit = true;
 
@@ -44,7 +45,7 @@ class _Edit_ScreenState extends State<Edit_Screen> {
   void didChangeDependencies() {
     if (_isInit) {
       final productId = ModalRoute.of(context)!.settings.arguments ?? '';
-      print(productId);
+      // print(productId);
       // ignore: unnecessary_null_comparison
       if (productId != '') {
         _editedProduct = Provider.of<Products>(context, listen: false)
@@ -71,14 +72,44 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     super.dispose();
   }
 
-  pickImage(ImageSource source) async {
-    final ImagePicker _imagePicker = ImagePicker();
-    XFile? file = await _imagePicker.pickImage(source: source);
+  File? _imageFile;
+  String? _imageUrl;
+
+  Future<void> _pickImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: source);
+    setState(() {
+      if (pickedFile != null) _imageFile = File(pickedFile.path);
+    });
   }
 
-  void selectImage() async {
-    Uint8List img = await pickImage(ImageSource.gallery);
+  Future<void> _uploadImage() async {
+    print("hi");
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dxbtmycgb/upload');
+
+    final request = http.MultipartRequest('POST', url)
+      ..fields['upload_preset'] = 'rozzbjog'
+      ..files.add(await http.MultipartFile.fromPath('file', _imageFile!.path));
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      final responseData = await response.stream.toBytes();
+      final responseString = String.fromCharCodes(responseData);
+      final jsonMap = jsonDecode(responseString);
+      setState(() {
+        final url = jsonMap['url'];
+        _imageUrl = url;
+      });
+    }
   }
+
+  // pickImage(ImageSource source) async {
+  //   final ImagePicker _imagePicker = ImagePicker();
+  //   XFile? file = await _imagePicker.pickImage(source: source);
+  // }
+
+  // void selectImage() async {
+  //   Uint8List img = await pickImage(ImageSource.gallery);
+  // }
 
   Future<void> _saveForm() async {
     final isValid = _form.currentState!.validate();
@@ -233,70 +264,131 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                                       ),
                                     )),
                           Expanded(
-                            child:
-                                //   IconButton(
-                                // onPressed: () async {
-                                //   print("hi");
-                                //   ImagePicker imagePicker = ImagePicker();
-                                //   XFile? file = await imagePicker.pickImage(
-                                //       source: ImageSource.gallery);
-                                //   print("hi");
-                                //   print('${file?.path}');
-
-                                //   if (file == null) return;
-
-                                //   String uniquee = DateTime.now()
-                                //       .microsecondsSinceEpoch
-                                //       .toString();
-                                //   //Get a referance to storage root
-                                //   Reference referenceRoot =
-                                //       FirebaseStorage.instance.ref();
-
-                                //   Reference referenceDirImage =
-                                //       referenceRoot.child('images');
-
-                                //   //create a reference for the image to be stored
-                                //   Reference referenceImageToUpload =
-                                //       referenceDirImage.child(uniquee);
-                                //   try {
-                                //     //store the file
-                                //     await referenceImageToUpload
-                                //         .putFile(File(file.path));
-                                //     imageUrl = await referenceImageToUpload
-                                //         .getDownloadURL();
-                                //   } catch (error) {
-                                //     print("WEEEEEEEEEEEEEEEEEE");
-                                //   }
-                                //   print("fdfdfdfdfd");
-                                // },
-                                // icon: Icon(Icons.camera_alt),
-
-                                TextFormField(
-                              decoration:
-                                  InputDecoration(labelText: 'Imagen URL'),
-                              keyboardType: TextInputType.url,
-                              textInputAction: TextInputAction.done,
-                              focusNode: _imageNode,
-                              onSaved: (newValue) => {
-                                _editedProduct = Product(
-                                    id: _editedProduct.id,
-                                    title: _editedProduct.title,
-                                    description: _editedProduct.description,
-                                    price: _editedProduct.price,
-                                    isFavourite: _editedProduct.isFavourite,
-                                    imageUrl: newValue!)
-                              },
-                              onFieldSubmitted: (value) => _saveForm(),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please Provide the Image URL";
-                                }
-                                if (!value!.startsWith('http') &&
-                                    !value.startsWith('https')) {
-                                  return "Please enter Valid URL";
-                                }
-                              },
+                            child: Column(
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.camera),
+                                  onPressed: () {
+                                    _pickImage(ImageSource.camera);
+                                  },
+                                ),
+                                if (_imageFile != null) ...[
+                                  Image.file(_imageFile!),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await _uploadImage();
+                                      _imageController.text = _imageUrl!;
+                                      _editedProduct = Product(
+                                          id: _editedProduct.id,
+                                          title: _editedProduct.title,
+                                          description:
+                                              _editedProduct.description,
+                                          price: _editedProduct.price,
+                                          isFavourite:
+                                              _editedProduct.isFavourite,
+                                          imageUrl: _imageUrl!);
+                                    },
+                                    child: Text("upload"),
+                                  )
+                                ],
+                                IconButton(
+                                  icon: Icon(Icons.file_upload),
+                                  onPressed: () {
+                                    _pickImage(ImageSource.gallery);
+                                  },
+                                ),
+                                if (_imageFile != null) ...[
+                                  Image.file(_imageFile!),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await _uploadImage();
+                                      _imageController.text = _imageUrl!;
+                                      _editedProduct = Product(
+                                          id: _editedProduct.id,
+                                          title: _editedProduct.title,
+                                          description:
+                                              _editedProduct.description,
+                                          price: _editedProduct.price,
+                                          isFavourite:
+                                              _editedProduct.isFavourite,
+                                          imageUrl: _imageUrl!);
+                                    },
+                                    child: Text("upload"),
+                                  )
+                                ],
+                                // if (_imageUrl != null) ...[
+                                //   // Image.network(_imageUrl!),
+                                //   // Text(" the down load link is :$_imageUrl")
+                                // ]
+                              ],
                             ),
+
+                            //    IconButton(
+                            // onPressed: () async {
+                            // print("hi");
+                            // ImagePicker imagePicker = ImagePicker();
+                            // XFile? file = await imagePicker.pickImage(
+                            //     source: ImageSource.gallery);
+                            // print("hi");
+                            // print('${file?.path}');
+
+                            // if (file == null) return;
+
+                            // String uniquee = DateTime.now()
+                            //     .microsecondsSinceEpoch
+                            //     .toString();
+                            // //Get a referance to storage root
+                            // Reference referenceRoot =
+                            //     FirebaseStorage.instance.ref();
+
+                            // Reference referenceDirImage = referenceRoot.child(
+                            //     'https://gs://shopit-a52e1.appspot.com/images');
+
+                            // //create a reference for the image to be stored
+                            // Reference referenceImageToUpload =
+                            //     referenceDirImage.child(uniquee);
+                            // try {
+                            //   //store the file
+                            //   await referenceImageToUpload
+                            //       .putFile(File(file.path));
+                            //   imageUrl = await referenceImageToUpload
+                            //       .getDownloadURL();
+                            //   print("ewwwwweeee");
+                            // } catch (error) {
+                            //   print("weeeeeeeeeeee   $error");
+                            // }
+                            // print("fdfdfdfdfd");
+
+                            // },
+                            // icon: Icon(Icons.camera_alt),
+                            // )
+
+                            //     TextFormField(
+                            //   decoration:
+                            //       InputDecoration(labelText: 'Imagen URL'),
+                            //   keyboardType: TextInputType.url,
+                            //   textInputAction: TextInputAction.done,
+                            //   focusNode: _imageNode,
+                            //   onSaved: (newValue) => {
+                            //     _editedProduct = Product(
+                            //         id: _editedProduct.id,
+                            //         title: _editedProduct.title,
+                            //         description: _editedProduct.description,
+                            //         price: _editedProduct.price,
+                            //         isFavourite: _editedProduct.isFavourite,
+                            //         imageUrl: newValue!)
+                            //   },
+                            //   onFieldSubmitted: (value) => _saveForm(),
+                            //   validator: (value) {
+                            //     if (value!.isEmpty) {
+                            //       return "Please Provide the Image URL";
+                            //     }
+                            //     if (!value!.startsWith('http') &&
+                            //         !value.startsWith('https')) {
+                            //       return "Please enter Valid URL";
+                            //     }
+                            //   },
+                            // ),
                           )
                         ],
                       )

@@ -41,7 +41,7 @@ class Auth with ChangeNotifier {
           },
         ),
       );
-      print(json.decode(response.body));
+      // print(json.decode(response.body));
       final responseData = json.decode(response.body);
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
@@ -55,7 +55,7 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
-      print(_expiryDate);
+      // print(_expiryDate);
       _userId = responseData['localId'];
       notifyListeners();
     } catch (error) {
@@ -73,7 +73,7 @@ class Auth with ChangeNotifier {
             "password": password,
             "returnSecureToken": true,
           }));
-      print(json.decode(response.body));
+      // print(json.decode(response.body));
       // return _authenticate(email, password, "signupNewUser");
       final responseData = json.decode(response.body);
       if (responseData['error'] != null) {

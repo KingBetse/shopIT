@@ -59,7 +59,7 @@ class Products with ChangeNotifier {
     var url9 = Uri.parse(
         'https://shopit-a52e1-default-rtdb.firebaseio.com/products.json?auth=$authToken');
     try {
-      print(userId);
+      // print(userId);
       final response = await http.post(
         url9,
         body: json.encode({
@@ -107,8 +107,8 @@ class Products with ChangeNotifier {
       );
       var favoriteR = await http.get(url);
       final favoriteData = json.decode(favoriteR.body);
-      print(favoriteData);
-      print("HI");
+      // print(favoriteData);
+      // print("HI");
 
       final List<Product> loadedProducts = [];
       extractedData.forEach((key, value) {

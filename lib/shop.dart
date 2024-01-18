@@ -21,19 +21,32 @@ class shopPage extends StatelessWidget {
 
     final product =
         index == 1 ? productsData.favouriteItems : productsData.items;
+    // print("$productsData.favouriteItems");
 
-    return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10),
-        itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-              value: product[i],
-              // create: (c) => products[i],
-              child: Product_item(index),
+    return product.isEmpty && index == 1
+        ? Center(
+            child: Text(
+              'No Favorite Added',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: 'Anton',
+                fontWeight: FontWeight.w300,
+              ),
             ),
-        padding: const EdgeInsets.all(10.0),
-        itemCount: product.length);
+          )
+        : GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10),
+            itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+                  value: product[i],
+                  // create: (c) => products[i],
+                  child: Product_item(index),
+                ),
+            padding: const EdgeInsets.all(10.0),
+            itemCount: product.length);
   }
 }

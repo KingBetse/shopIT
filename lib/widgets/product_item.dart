@@ -27,7 +27,7 @@ class Product_item extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         footer: GridTileBar(
-          backgroundColor: Colors.black87,
+          backgroundColor: Color.fromARGB(221, 64, 33, 204),
           leading: Consumer<Product>(
             builder: (ctx, products, child) => IconButton(
               icon: Icon(

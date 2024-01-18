@@ -90,9 +90,28 @@ class Orders with ChangeNotifier {
                 .toList()));
       });
       orders = loadedOrders;
-      notifyListeners();
+
+      for (var orderItem in loadedOrders) {
+        print("Key: ${orderItem.id}");
+        print("Value: ${orderItem.amount}");
+      }
+      // loadedOrders
+      // notifyListeners();
     } catch (error) {
       throw error;
     }
+  }
+
+  void deleteProdct(
+    String userId,
+    String id,
+  ) async {
+    // Items.removeWhere((element) => element.id == id);
+    var url = Uri.parse(
+        'https://shopit-a52e1-default-rtdb.firebaseio.com/order/$userId/$id.json?auth=$authToken');
+
+    http.delete(url);
+
+    notifyListeners();
   }
 }

@@ -111,36 +111,46 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("ShopIT"), actions: [
-          PopupMenuButton(
-            onSelected: (FilterOpp selectedValue) {
-              setState(() {
-                if (selectedValue == FilterOpp.Favorites) {
-                  showOnlyFavorite = true;
-                } else {
-                  showOnlyFavorite = false;
-                }
-              });
-            },
-            itemBuilder: (_) => [
-              const PopupMenuItem(
-                  value: FilterOpp.Favorites, child: Text('Favorite')),
-              const PopupMenuItem(
-                value: FilterOpp.All,
-                child: Text("All"),
-              )
-            ],
-          ),
+        appBar: AppBar(title: const Text("ShoeIT"), actions: [
+          // PopupMenuButton(
+          //   onSelected: (FilterOpp selectedValue) {
+          //     setState(() {
+          //       if (selectedValue == FilterOpp.Favorites) {
+          //         showOnlyFavorite = true;
+          //       } else {
+          //         showOnlyFavorite = false;
+          //       }
+          //     });
+          //   },
+          //   itemBuilder: (_) => [
+          //     const PopupMenuItem(
+          //         value: FilterOpp.Favorites, child: Text('Favorite')),
+          //     const PopupMenuItem(
+          //       value: FilterOpp.All,
+          //       child: Text("All"),
+          //     )
+          //   ],
+          // ),
           Consumer<Cart>(
-              builder: (context, valuee, child) => Badge(
-                    label: Text(valuee.itemCount.toString()),
-                    child: child,
+            builder: (context, valuee, child) => valuee.itemCount == 0
+                ? IconButton(
+                    icon: const Icon(Icons.shopping_cart),
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed(Cart_Screen.routeName),
+                  )
+                : Container(
+                    margin: EdgeInsets.only(right: 10),
+                    child: Badge(
+                      label: Text(valuee.itemCount.toString()),
+                      child: child,
+                    ),
                   ),
-              child: IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(Cart_Screen.routeName),
-              ))
+            child: IconButton(
+              icon: const Icon(Icons.shopping_cart),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(Cart_Screen.routeName),
+            ),
+          )
         ]),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
