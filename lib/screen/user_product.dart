@@ -31,6 +31,15 @@ class UserProduct extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        onPressed: () {
+          Navigator.of(context).pushNamed(Edit_Screen.routename);
+        },
+        child: const Icon(Icons.add,
+            color: Color.fromARGB(255, 0, 0, 0), size: 25),
+      ),
       drawer: TabScreen(),
       body: FutureBuilder(
         future: _refreshProducts(context),

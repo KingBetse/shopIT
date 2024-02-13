@@ -90,7 +90,6 @@ class Orders with ChangeNotifier {
                 .toList()));
       });
       orders = loadedOrders;
-
       for (var orderItem in loadedOrders) {
         print("Key: ${orderItem.id}");
         print("Value: ${orderItem.amount}");

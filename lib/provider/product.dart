@@ -9,6 +9,11 @@ class Product with ChangeNotifier {
   double price;
   bool isFavourite;
   String imageUrl;
+  String brand;
+  String size;
+  String gender;
+  double discount;
+  bool isDiscount;
 
   Product({
     required this.id,
@@ -17,9 +22,19 @@ class Product with ChangeNotifier {
     required this.price,
     this.isFavourite = false,
     required this.imageUrl,
+    required this.brand,
+    required this.size,
+    required this.gender,
+    required this.discount,
+    this.isDiscount = false,
   });
   void _setFavValue(bool newValue) {
     isFavourite = newValue;
+    notifyListeners();
+  }
+
+  void _setDisValue(bool newValue) {
+    isDiscount = newValue;
     notifyListeners();
   }
 
@@ -74,6 +89,36 @@ class Product with ChangeNotifier {
     } catch (error) {
       print(error);
       _setFavValue(oldStatus);
+    }
+  }
+
+  Future<void> toggleDiscountStatus(String token, String userId) async {
+    final oldStatus = isDiscount;
+    isDiscount = !isDiscount;
+    notifyListeners();
+
+    final url = Uri.https(
+      'shopit-a52e1-default-rtdb.firebaseio.com',
+      '/userDiscount/$userId/$id.json',
+      {'auth': token},
+    );
+
+    try {
+      final response = await http.put(
+        url,
+        body: json.encode(
+          isDiscount,
+        ),
+      );
+
+      if (response.statusCode >= 400) {
+        _setDisValue(oldStatus);
+      }
+
+      notifyListeners();
+    } catch (error) {
+      print(error);
+      _setDisValue(oldStatus);
     }
   }
 }
