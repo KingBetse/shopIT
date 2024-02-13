@@ -67,6 +67,10 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
+          'discount': product.discount,
+          'brand': product.brand,
+          'size': product.size,
+          'gender': product.gender,
           // 'isFavorite': product.isFavourite,
           'creatorId': userId
         }),
@@ -77,7 +81,11 @@ class Products with ChangeNotifier {
           title: product.title,
           description: product.description,
           price: product.price,
-          imageUrl: product.imageUrl);
+          imageUrl: product.imageUrl,
+          brand: product.brand,
+          size: product.size,
+          gender: product.gender,
+          discount: product.discount);
 
       Items.add(newProduct);
       notifyListeners();
@@ -96,6 +104,7 @@ class Products with ChangeNotifier {
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      print("ssdfsdfdsfdsf ${extractedData}");
 
       if (extractedData == null) {
         return;
@@ -110,18 +119,36 @@ class Products with ChangeNotifier {
       // print(favoriteData);
       // print("HI");
 
+      // url = Uri.https(
+      //   'shopit-a52e1-default-rtdb.firebaseio.com',
+      //   '/userDiscount/$userId.json',
+      //   {'auth': authToken},
+      // );
+      // var discountR = await http.get(url);
+      // final discountData = json.decode(discountR.body);
+
       final List<Product> loadedProducts = [];
       extractedData.forEach((key, value) {
-        loadedProducts.add(Product(
-            id: key,
-            title: value["title"],
-            description: value['description'],
-            price: value['price'],
-            isFavourite:
-                favoriteData == null ? false : favoriteData[key] ?? false,
-            imageUrl: value["imageUrl"]));
+        loadedProducts.add(
+          Product(
+              id: key,
+              title: value["title"],
+              description: value['description'],
+              price: value['price'],
+              isFavourite:
+                  favoriteData == null ? false : favoriteData[key] ?? false,
+              imageUrl: value["imageUrl"],
+              brand: value['brand'],
+              size: value['size'],
+              gender: value['gender'],
+              discount: value['discount']
+              // isDiscount:
+              //     discountData == null ? false : favoriteData[key] ?? false,
+              ),
+        );
       });
       Items = loadedProducts;
+      print(Items);
       notifyListeners();
     } catch (error) {
       throw error;
@@ -141,7 +168,11 @@ class Products with ChangeNotifier {
           'description': newProduct.description,
           'imageUrl': newProduct.imageUrl,
           'price': newProduct.price,
-          'isFavorite': newProduct.isFavourite
+          'isFavorite': newProduct.isFavourite,
+          'brand': newProduct.brand,
+          'size': newProduct.size,
+          'gender': newProduct.gender,
+          'discount': newProduct.discount,
         }),
       );
       Items[prodIndex] = newProduct;

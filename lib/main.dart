@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_it/provider/product.dart';
 import 'package:shop_it/screen/cart_screen.dart';
 
 import 'package:shop_it/screen/product_detail.dart';
@@ -118,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           //       if (selectedValue == FilterOpp.Favorites) {
           //         showOnlyFavorite = true;
           //       } else {
+
           //         showOnlyFavorite = false;
           //       }
           //     });
@@ -152,6 +154,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           )
         ]),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Color.fromARGB(255, 237, 237, 237),
+          tooltip: 'Increment',
+          onPressed: () {
+            Navigator.of(context).pushNamed(Edit_Screen.routename);
+          },
+          child: const Icon(Icons.add,
+              color: Color.fromARGB(255, 0, 0, 0), size: 28),
+        ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

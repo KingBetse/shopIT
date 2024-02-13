@@ -19,8 +19,12 @@ class Edit_Screen extends StatefulWidget {
 
 class _Edit_ScreenState extends State<Edit_Screen> {
   final _priceNode = FocusNode();
+  final _discountNode = FocusNode();
   final _descriptionNode = FocusNode();
   final _imageNode = FocusNode();
+  final _brandNode = FocusNode();
+  final _sizeNode = FocusNode();
+
   final _imageController = TextEditingController();
   final _form = GlobalKey<FormState>();
 
@@ -30,16 +34,25 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     price: 0,
     description: '',
     imageUrl: '',
+    brand: '',
+    size: '',
+    gender: '',
+    discount: 0,
   );
   var _initValues = {
     'title': '',
     'description': '',
     'price': '',
     'imageUrl': '',
+    'brand': '',
+    'size': '',
+    'gender': '',
+    'discount': ''
   };
   // String imageUrl = '';
   var isLoading = false;
   var _isInit = true;
+  var _isSwitched = false;
 
   @override
   void didChangeDependencies() {
@@ -54,7 +67,11 @@ class _Edit_ScreenState extends State<Edit_Screen> {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
           'price': _editedProduct.price.toString(),
+          'discount': _editedProduct.discount.toString(),
           'imageUrl': '',
+          'brand': _editedProduct.brand,
+          'size': _editedProduct.size,
+          'gender': _editedProduct.gender,
         };
         _imageController.text = _editedProduct.imageUrl;
       }
@@ -66,8 +83,10 @@ class _Edit_ScreenState extends State<Edit_Screen> {
   @override
   void dispose() {
     _priceNode.dispose();
+    _discountNode.dispose();
     _descriptionNode.dispose();
     _imageNode.dispose();
+    _sizeNode.dispose();
     _imageController.dispose();
     super.dispose();
   }
@@ -84,7 +103,6 @@ class _Edit_ScreenState extends State<Edit_Screen> {
   }
 
   Future<void> _uploadImage() async {
-    print("hi");
     final url = Uri.parse('https://api.cloudinary.com/v1_1/dxbtmycgb/upload');
 
     final request = http.MultipartRequest('POST', url)
@@ -102,6 +120,10 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     }
   }
 
+  double disCalc(double price, double disc) {
+    price = price * (disc / 100);
+    return price;
+  }
   // pickImage(ImageSource source) async {
   //   final ImagePicker _imagePicker = ImagePicker();
   //   XFile? file = await _imagePicker.pickImage(source: source);
@@ -150,10 +172,12 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     Navigator.of(context).pop();
   }
 
+  String dropDown = "Nike";
+  String dropGender = "Male";
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Product"),
+        title: Text("Add Product"),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 6.0),
@@ -184,7 +208,11 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                               title: newValue!,
                               description: _editedProduct.description,
                               price: _editedProduct.price,
-                              imageUrl: _editedProduct.imageUrl)
+                              imageUrl: _editedProduct.imageUrl,
+                              brand: _editedProduct.brand,
+                              size: _editedProduct.size,
+                              gender: _editedProduct.gender,
+                              discount: _editedProduct.discount)
                         },
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -205,6 +233,10 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                               description: _editedProduct.description,
                               price: double.parse(newValue!),
                               imageUrl: _editedProduct.imageUrl,
+                              brand: _editedProduct.brand,
+                              size: _editedProduct.size,
+                              gender: _editedProduct.gender,
+                              discount: _editedProduct.discount,
                               isFavourite: _editedProduct.isFavourite)
                         },
                         validator: (value) {
@@ -236,6 +268,10 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                               description: newValue!,
                               price: _editedProduct.price,
                               imageUrl: _editedProduct.imageUrl,
+                              brand: _editedProduct.brand,
+                              size: _editedProduct.size,
+                              gender: _editedProduct.gender,
+                              discount: _editedProduct.discount,
                               isFavourite: _editedProduct.isFavourite)
                         },
                         focusNode: _descriptionNode,
@@ -245,6 +281,151 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                           }
                         },
                       ),
+                      Row(
+                        children: [
+                          Text("Brand :"),
+                          DropdownButton<String>(
+                            value: dropDown,
+                            items: [
+                              DropdownMenuItem(
+                                child: Text("Nike"),
+                                value: 'Nike',
+                              ),
+                              DropdownMenuItem(
+                                child: Text("Adidas"),
+                                value: 'Adidas',
+                              ),
+                              DropdownMenuItem(
+                                child: Text("Crocs"),
+                                value: 'Crocs',
+                              ),
+                              DropdownMenuItem(
+                                child: Text("Gucci"),
+                                value: 'Gucci',
+                              ),
+                              DropdownMenuItem(
+                                child: Text("Other"),
+                                value: 'Other',
+                              ),
+                            ],
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                // _editedProduct.brand = newValue.toString();
+                                dropDown = newValue!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text("Gender :"),
+                          DropdownButton<String>(
+                            value: dropGender,
+                            items: [
+                              DropdownMenuItem(
+                                child: Text("Male"),
+                                value: 'Male',
+                              ),
+                              DropdownMenuItem(
+                                child: Text("Woman"),
+                                value: 'Woman',
+                              ),
+                              DropdownMenuItem(
+                                child: Text("Unisex"),
+                                value: 'Unisex',
+                              ),
+                            ],
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                // _editedProduct.gender = newValue.toString();
+                                dropGender = newValue!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      TextFormField(
+                        initialValue: _initValues['size'],
+                        decoration: InputDecoration(label: Text("size")),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_priceNode);
+                        },
+                        onSaved: (newValue) => {
+                          _editedProduct = Product(
+                            id: _editedProduct.id,
+                            title: _editedProduct.title,
+                            description: _editedProduct.description,
+                            price: _editedProduct.price,
+                            imageUrl: _editedProduct.imageUrl,
+                            brand: _editedProduct.brand,
+                            size: newValue!,
+                            gender: _editedProduct.gender,
+                            discount: _editedProduct.discount,
+                          )
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please Provide the Value";
+                          }
+                        },
+                      ),
+
+                      // Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //     children: [
+                      //       Text("Discount:"),
+                      //       Switch(
+                      //           value: _isSwitched,
+                      //           onChanged: (value) {
+                      //             setState(() {
+                      //               _isSwitched = value;
+                      //             });
+                      //           }),
+                      //     ]),
+                      // _isSwitched == true
+                      //     ?
+                      TextFormField(
+                        initialValue: _initValues['discount'],
+                        // decoration:
+                        //     InputDecoration(label: Text("Discount")),
+                        // textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
+                        // maxLines: 3,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_discountNode);
+                        },
+                        onSaved: (newValue) => {
+                          _editedProduct = Product(
+                            id: _editedProduct.id,
+                            title: _editedProduct.title,
+                            description: _editedProduct.description,
+                            price: _editedProduct.price,
+                            imageUrl: _editedProduct.imageUrl,
+                            brand: _editedProduct.brand,
+                            isFavourite: _editedProduct.isFavourite,
+                            size: _editedProduct.size,
+                            gender: _editedProduct.gender,
+                            discount: double.parse(newValue!),
+                          )
+                        },
+                        focusNode: _discountNode,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please Provide the Value";
+                          }
+                          if (double.tryParse(value) == null) {
+                            return "Please Provide the Correct Value";
+                          }
+                          if (double.parse(value) <= 0) {
+                            return "Please Provide the price above 0";
+                          }
+                          return null;
+                        },
+                      ),
+                      // : Text(""),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -258,10 +439,12 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                               child: _imageController.text.isEmpty
                                   ? Center(child: Text("Enter a URL"))
                                   : FittedBox(
-                                      child: Image.network(
-                                        _imageController.text,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child: _imageFile != null
+                                          ? Image.file(_imageFile!)
+                                          : Image.network(
+                                              _imageController.text,
+                                              fit: BoxFit.cover,
+                                            ),
                                     )),
                           Expanded(
                             child: Column(
@@ -272,25 +455,25 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                                     _pickImage(ImageSource.camera);
                                   },
                                 ),
-                                if (_imageFile != null) ...[
-                                  Image.file(_imageFile!),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      await _uploadImage();
-                                      _imageController.text = _imageUrl!;
-                                      _editedProduct = Product(
-                                          id: _editedProduct.id,
-                                          title: _editedProduct.title,
-                                          description:
-                                              _editedProduct.description,
-                                          price: _editedProduct.price,
-                                          isFavourite:
-                                              _editedProduct.isFavourite,
-                                          imageUrl: _imageUrl!);
-                                    },
-                                    child: Text("upload"),
-                                  )
-                                ],
+                                // if (_imageFile != null) ...[
+                                //   // Image.file(_imageFile!),
+                                //   ElevatedButton(
+                                //     onPressed: () async {
+                                //       await _uploadImage();
+                                //       _imageController.text = _imageUrl!;
+                                //       _editedProduct = Product(
+                                //           id: _editedProduct.id,
+                                //           title: _editedProduct.title,
+                                //           description:
+                                //               _editedProduct.description,
+                                //           price: _editedProduct.price,
+                                //           isFavourite:
+                                //               _editedProduct.isFavourite,
+                                //           imageUrl: _imageUrl!);
+                                //     },
+                                //     child: Text("upload"),
+                                //   )
+                                // ],
                                 IconButton(
                                   icon: Icon(Icons.file_upload),
                                   onPressed: () {
@@ -298,20 +481,23 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                                   },
                                 ),
                                 if (_imageFile != null) ...[
-                                  Image.file(_imageFile!),
+                                  // Image.file(_imageFile!),
                                   ElevatedButton(
                                     onPressed: () async {
                                       await _uploadImage();
                                       _imageController.text = _imageUrl!;
                                       _editedProduct = Product(
-                                          id: _editedProduct.id,
-                                          title: _editedProduct.title,
-                                          description:
-                                              _editedProduct.description,
-                                          price: _editedProduct.price,
-                                          isFavourite:
-                                              _editedProduct.isFavourite,
-                                          imageUrl: _imageUrl!);
+                                        id: _editedProduct.id,
+                                        title: _editedProduct.title,
+                                        description: _editedProduct.description,
+                                        price: _editedProduct.price,
+                                        isFavourite: _editedProduct.isFavourite,
+                                        imageUrl: _imageUrl!,
+                                        brand: _editedProduct.brand,
+                                        size: _editedProduct.size,
+                                        gender: _editedProduct.gender,
+                                        discount: _editedProduct.discount,
+                                      );
                                     },
                                     child: Text("upload"),
                                   )
