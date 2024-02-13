@@ -63,6 +63,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'MyShop',
           theme: ThemeData(
             fontFamily: "Lato",
@@ -133,6 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
           //     )
           //   ],
           // ),
+
           Consumer<Cart>(
             builder: (context, valuee, child) => valuee.itemCount == 0
                 ? IconButton(

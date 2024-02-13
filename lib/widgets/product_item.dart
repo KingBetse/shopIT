@@ -6,6 +6,7 @@ import 'package:shop_it/provider/product.dart';
 import 'package:shop_it/provider/products.dart';
 import 'package:shop_it/screen/product_detail.dart';
 import '../provider/auth.dart';
+import 'package:animate_do/animate_do.dart';
 
 class Product_item extends StatelessWidget {
   // final bool showFav;
@@ -26,8 +27,7 @@ class Product_item extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        footer: GridTileBar(
-          backgroundColor: Color.fromARGB(221, 64, 33, 204),
+        header: GridTileBar(
           leading: Consumer<Product>(
             builder: (ctx, products, child) => IconButton(
               icon: Icon(
@@ -40,10 +40,31 @@ class Product_item extends StatelessWidget {
               },
             ),
           ),
+        ),
+        footer: GridTileBar(
+          // backgroundColor: Color.fromARGB(221, 64, 33, 204),
+          // leading: Consumer<Product>(
+          //   builder: (ctx, products, child) => IconButton(
+          //     icon: Icon(
+          //       products.isFavourite ? Icons.favorite : Icons.favorite_border,
+          //       color: Colors.red,
+          //     ),
+          //     onPressed: () {
+          //       products.toggleFavoriteStatus(
+          //           authData.token!, authData.userId!);
+          //     },
+          //   ),
+          // ),
+
           title: Text(
             productContainer.title,
             textAlign: TextAlign.center,
           ),
+          subtitle: Text(
+            productContainer.description,
+            textAlign: TextAlign.center,
+          ),
+
           trailing: IconButton(
               icon: const Icon(
                 Icons.shopping_cart_checkout_outlined,

@@ -124,14 +124,6 @@ class _Edit_ScreenState extends State<Edit_Screen> {
     price = price * (disc / 100);
     return price;
   }
-  // pickImage(ImageSource source) async {
-  //   final ImagePicker _imagePicker = ImagePicker();
-  //   XFile? file = await _imagePicker.pickImage(source: source);
-  // }
-
-  // void selectImage() async {
-  //   Uint8List img = await pickImage(ImageSource.gallery);
-  // }
 
   Future<void> _saveForm() async {
     final isValid = _form.currentState!.validate();
@@ -195,9 +187,15 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                   key: _form,
                   child: ListView(
                     children: [
+                      SizedBox(
+                        height: 10,
+                      ),
                       TextFormField(
                         initialValue: _initValues['title'],
-                        decoration: InputDecoration(label: Text("Title")),
+                        decoration: InputDecoration(
+                          label: Text("Title"),
+                          border: OutlineInputBorder(),
+                        ),
                         textInputAction: TextInputAction.next,
                         onFieldSubmitted: (_) {
                           FocusScope.of(context).requestFocus(_priceNode);
@@ -220,9 +218,15 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                           }
                         },
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       TextFormField(
                         initialValue: _initValues['price'],
-                        decoration: InputDecoration(label: Text("Price")),
+                        decoration: InputDecoration(
+                          label: Text("Price"),
+                          border: OutlineInputBorder(),
+                        ),
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.number,
                         focusNode: _priceNode,
@@ -252,9 +256,16 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                           return null;
                         },
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
+
                       TextFormField(
                         initialValue: _initValues['description'],
-                        decoration: InputDecoration(label: Text("Description")),
+                        decoration: InputDecoration(
+                          label: Text("Description"),
+                          border: OutlineInputBorder(),
+                        ),
                         // textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.multiline,
                         maxLines: 3,
@@ -283,71 +294,89 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                       ),
                       Row(
                         children: [
-                          Text("Brand :"),
-                          DropdownButton<String>(
-                            value: dropDown,
-                            items: [
-                              DropdownMenuItem(
-                                child: Text("Nike"),
-                                value: 'Nike',
-                              ),
-                              DropdownMenuItem(
-                                child: Text("Adidas"),
-                                value: 'Adidas',
-                              ),
-                              DropdownMenuItem(
-                                child: Text("Crocs"),
-                                value: 'Crocs',
-                              ),
-                              DropdownMenuItem(
-                                child: Text("Gucci"),
-                                value: 'Gucci',
-                              ),
-                              DropdownMenuItem(
-                                child: Text("Other"),
-                                value: 'Other',
-                              ),
-                            ],
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                // _editedProduct.brand = newValue.toString();
-                                dropDown = newValue!;
-                              });
-                            },
+                          Text(
+                            "Brand :",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 26),
+                            child: DropdownButton<String>(
+                              value: dropDown,
+                              items: [
+                                DropdownMenuItem(
+                                  child: Text("Nike"),
+                                  value: 'Nike',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text("Adidas"),
+                                  value: 'Adidas',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text("Crocs"),
+                                  value: 'Crocs',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text("Gucci"),
+                                  value: 'Gucci',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text("Other"),
+                                  value: 'Other',
+                                ),
+                              ],
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  // _editedProduct.brand = newValue.toString();
+                                  dropDown = newValue!;
+                                });
+                              },
+                            ),
                           ),
                         ],
                       ),
                       Row(
                         children: [
-                          Text("Gender :"),
-                          DropdownButton<String>(
-                            value: dropGender,
-                            items: [
-                              DropdownMenuItem(
-                                child: Text("Male"),
-                                value: 'Male',
-                              ),
-                              DropdownMenuItem(
-                                child: Text("Woman"),
-                                value: 'Woman',
-                              ),
-                              DropdownMenuItem(
-                                child: Text("Unisex"),
-                                value: 'Unisex',
-                              ),
-                            ],
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                // _editedProduct.gender = newValue.toString();
-                                dropGender = newValue!;
-                              });
-                            },
+                          Text(
+                            "Gender :",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 26),
+                            child: DropdownButton<String>(
+                              value: dropGender,
+                              items: [
+                                DropdownMenuItem(
+                                  child: Text("Male"),
+                                  value: 'Male',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text("Woman"),
+                                  value: 'Woman',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text("Unisex"),
+                                  value: 'Unisex',
+                                ),
+                              ],
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  // _editedProduct.gender = newValue.toString();
+                                  dropGender = newValue!;
+                                });
+                              },
+                            ),
                           ),
                         ],
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       TextFormField(
                         initialValue: _initValues['size'],
-                        decoration: InputDecoration(label: Text("size")),
+                        decoration: InputDecoration(
+                          label: Text("Size"),
+                          border: OutlineInputBorder(),
+                        ),
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.number,
                         onFieldSubmitted: (_) {
@@ -387,57 +416,62 @@ class _Edit_ScreenState extends State<Edit_Screen> {
                       //     ]),
                       // _isSwitched == true
                       //     ?
-                      TextFormField(
-                        initialValue: _initValues['discount'],
-                        // decoration:
-                        //     InputDecoration(label: Text("Discount")),
-                        // textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
-                        // maxLines: 3,
-                        onFieldSubmitted: (_) {
-                          FocusScope.of(context).requestFocus(_discountNode);
-                        },
-                        onSaved: (newValue) => {
-                          _editedProduct = Product(
-                            id: _editedProduct.id,
-                            title: _editedProduct.title,
-                            description: _editedProduct.description,
-                            price: _editedProduct.price,
-                            imageUrl: _editedProduct.imageUrl,
-                            brand: _editedProduct.brand,
-                            isFavourite: _editedProduct.isFavourite,
-                            size: _editedProduct.size,
-                            gender: _editedProduct.gender,
-                            discount: double.parse(newValue!),
-                          )
-                        },
-                        focusNode: _discountNode,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Please Provide the Value";
-                          }
-                          if (double.tryParse(value) == null) {
-                            return "Please Provide the Correct Value";
-                          }
-                          if (double.parse(value) <= 0) {
-                            return "Please Provide the price above 0";
-                          }
-                          return null;
-                        },
-                      ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // TextFormField(
+                      //   initialValue: _initValues['discount'],
+                      //   decoration: InputDecoration(
+                      //     label: Text("Discount"),
+                      //     border: OutlineInputBorder(),
+                      //   ),
+                      //   // textInputAction: TextInputAction.next,
+                      //   keyboardType: TextInputType.number,
+                      //   // maxLines: 3,
+                      //   onFieldSubmitted: (_) {
+                      //     FocusScope.of(context).requestFocus(_discountNode);
+                      //   },
+                      //   onSaved: (newValue) => {
+                      //     _editedProduct = Product(
+                      //       id: _editedProduct.id,
+                      //       title: _editedProduct.title,
+                      //       description: _editedProduct.description,
+                      //       price: _editedProduct.price,
+                      //       imageUrl: _editedProduct.imageUrl,
+                      //       brand: _editedProduct.brand,
+                      //       isFavourite: _editedProduct.isFavourite,
+                      //       size: _editedProduct.size,
+                      //       gender: _editedProduct.gender,
+                      //       discount: double.parse(newValue!),
+                      //     )
+                      //   },
+                      //   focusNode: _discountNode,
+                      //   validator: (value) {
+                      //     if (value!.isEmpty) {
+                      //       return "Please Provide the Value";
+                      //     }
+                      //     if (double.tryParse(value) == null) {
+                      //       return "Please Provide the Correct Value";
+                      //     }
+                      //     if (double.parse(value) <= 0) {
+                      //       return "Please Provide the price above 0";
+                      //     }
+                      //     return null;
+                      //   },
+                      // ),
                       // : Text(""),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Container(
                               margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                              width: 100,
-                              height: 100,
+                              width: 200,
+                              height: 200,
                               decoration: BoxDecoration(
                                   border: Border.all(width: 1),
                                   color: Colors.grey),
                               child: _imageController.text.isEmpty
-                                  ? Center(child: Text("Enter a URL"))
+                                  ? Center(child: Text("Image"))
                                   : FittedBox(
                                       child: _imageFile != null
                                           ? Image.file(_imageFile!)

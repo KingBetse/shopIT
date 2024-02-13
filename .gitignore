@@ -42,3 +42,75 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Flutter/Dart specific files
+**/doc/api/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/.symlinks/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/flutter_export_environment.sh
+**/android/.gradle/
+**/android/app/build/
+**/android/app/outputs/
+**/android/.idea/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+**/android/.gradle/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+
+# Android
+**/build/
+**/captures/
+**/gradle/
+**/local.properties
+**/gradlew
+**/gradlew.bat
+**/gradle/
+**/gradle-wrapper.jar
+**/gradle-wrapper.properties
+**/gradle.properties
+
+# iOS
+**/Pods/
+**/Podfile.lock
+**/Pods/
+**/*.xcworkspace
+**/*.xcworkspace/
+**/*.xcodeproj/
+**/*.xcuserdatad/
+
+# Miscellaneous
+.DS_Store
+*.log
+*.log.*
+*.tmp
+*.bak
+*.swp
+*~
+*.zip
+*.tar.gz
+*.rar
+*.tar

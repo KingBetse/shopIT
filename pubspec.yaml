@@ -43,6 +43,8 @@ dependencies:
   firebase_storage: ^11.6.0
   cloudinary_flutter: ^1.0.0
   cloudinary_url_gen: ^1.0.0
+  carousel_slider: ^4.0.0
+  animate_do: ^2.1.0
 
 dev_dependencies:
   flutter_test:

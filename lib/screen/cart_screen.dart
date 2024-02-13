@@ -52,7 +52,7 @@ class Cart_Screen extends StatelessWidget {
       body: Column(children: [
         Card(
           elevation: 5,
-          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 0),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2),
             child: Row(
